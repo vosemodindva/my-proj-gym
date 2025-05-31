@@ -1,0 +1,16 @@
+ trigger:
+  - develop
+  - main
+  - feature/*
+pool:
+  vmImage: Ubuntu-latest
+steps:
+- checkout: self
+  persistCredentials: true
+- script: |
+    git remote add github https://$(GITHUB_PAT)@github.com/<org>/gym-app.git
+    git fetch github
+    git push github $BUILD_SOURCEBRANCH:refs/heads/$BUILD_SOURCEBRANCH --force
+  env:
+    GITHUB_PAT: $(github-pat)
+  displayName: Sync Azure DevOps to GitHub
