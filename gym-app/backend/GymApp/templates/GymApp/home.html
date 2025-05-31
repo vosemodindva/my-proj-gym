@@ -1,0 +1,10 @@
+<h1>Главная</h1>
+{% if user.is_authenticated %}
+    <p>Привет, {{ user.username }}!</p>
+    <a href="{% url 'profile' %}">Личный кабинет</a> |
+    <a href="{% url 'logout' %}">Выход</a>
+{% else %}
+    <a href="{% url 'login' %}">Вход</a> |
+    <a href="{% url 'register' %}">Регистрация</a> |
+{% endif %}
+    <a href="{% url 'subscribe' %}">Купить абонемент</a> |
