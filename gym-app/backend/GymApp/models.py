@@ -28,5 +28,15 @@ class UserMembership(models.Model):
         delta = self.valid_until - now()
         return max(delta.days, 0)  # не будет показывать отрицательное значение
     
-    
-    
+class Event(models.Model):
+    title = models.CharField(max_length=100)
+    description = models.TextField()
+    image = models.ImageField(upload_to='event_images/')
+    participants = models.ManyToManyField(User, blank=True)
+
+    def __str__(self):
+        return self.title
+
+    def participant_count(self):
+        return self.participants.count()
+

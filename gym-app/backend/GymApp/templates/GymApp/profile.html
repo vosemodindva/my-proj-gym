@@ -16,5 +16,6 @@
 {% else %}
     <p>У вас пока нет активного абонемента.</p>
 {% endif %}
-
+<hr>
+<a href="{% url 'logout' %}" class="btn btn-outline-danger">Выйти из аккаунта</a>
 {% endblock %}

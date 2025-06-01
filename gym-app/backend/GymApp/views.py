@@ -1,13 +1,10 @@
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
-from .models import Membership
-from django.shortcuts import redirect
 from django.utils.timezone import now, timedelta
-from .models import UserMembership, Membership
-
+from .models import UserMembership, Membership, Event
 
 def home(request):
     memberships = Membership.objects.all()
@@ -99,3 +96,20 @@ def buy_membership(request, membership_id):
         }
     )
     return redirect('profile')
+
+@login_required
+def event_list(request):
+    events = Event.objects.all()
+    return render(request, 'GymApp/events.html', {'events': events})
+
+@login_required
+def join_event(request, event_id):
+    event = get_object_or_404(Event, id=event_id)
+    event.participants.add(request.user)
+    return redirect('events')
+
+@login_required
+def leave_event(request, event_id):
+    event = get_object_or_404(Event, id=event_id)
+    event.participants.remove(request.user)
+    return redirect('events')
