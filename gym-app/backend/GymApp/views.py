@@ -3,20 +3,34 @@ from django.shortcuts import render
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
+from .models import Membership
+from django.shortcuts import redirect
+from django.utils.timezone import now, timedelta
+from .models import UserMembership, Membership
 
 
 def home(request):
-    return render(request, 'GymApp/home.html')
+    memberships = Membership.objects.all()
+    return render(request, 'GymApp/home.html', {'memberships': memberships})
 
-def subscribe(request):
-    return render(request, 'GymApp/purchase.html')
-
-def login_view(request):
-    return render(request, 'GymApp/login.html')
+@login_required
+def purchase(request):
+    memberships = Membership.objects.all()
+    return render(request, 'GymApp/purchase.html', {'memberships': memberships})
 
 @login_required
 def profile(request):
-    return render(request, 'GymApp/profile.html', {'user': request.user})
+    try:
+        membership = request.user.usermembership
+        if not membership.is_active():
+            membership = None
+    except UserMembership.DoesNotExist:
+        membership = None
+
+    return render(request, 'GymApp/profile.html', {
+        'user': request.user,
+        'membership': membership,
+    })
 
 def postuser(request):
     # получаем из данных запроса POST отправленные через форму данные
@@ -25,19 +39,25 @@ def postuser(request):
     return HttpResponse(f"<h2>Name: {name}  Age: {age}</h2>")
 from django.shortcuts import render, redirect
 
+from django.contrib.auth import authenticate, login
+from django.shortcuts import redirect
+
 def login_view(request):
+    next_url = request.GET.get('next', 'profile')  # если нет ?next — идём в профиль
+
     if request.method == 'POST':
-        username = request.POST.get('username')
-        password = request.POST.get('password')
+        username = request.POST.get("username")
+        password = request.POST.get("password")
 
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            return redirect('profile')  # переход в личный кабинет
+            return redirect(request.POST.get('next', next_url))  # приоритет: скрытое поле, потом ?next
         else:
-            return render(request, 'GymApp/login.html', {'error': 'Неверные данные'})
+            return render(request, 'GymApp/login.html', {'error': 'Неверные данные', 'next': next_url})
 
-    return render(request, 'GymApp/login.html')
+    return render(request, 'GymApp/login.html', {'next': next_url})
+
 
 def register(request):
     if request.method == "POST":
@@ -60,3 +80,22 @@ def register(request):
 def logout_view(request):
     logout(request)
     return redirect("home")
+
+def trainers_view(request):
+    return redirect("home")
+
+@login_required
+def buy_membership(request, membership_id):
+    membership = Membership.objects.get(id=membership_id)
+    valid_until = now() + timedelta(days=membership.duration_days)
+
+    # Обновляем или создаём запись
+    UserMembership.objects.update_or_create(
+        user=request.user,
+        defaults={
+            'membership': membership,
+            'purchase_date': now(),
+            'valid_until': valid_until
+        }
+    )
+    return redirect('profile')

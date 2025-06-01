@@ -7,10 +7,11 @@
 <body>
     <h2>Login</h2>
     <form method="post">
-        {% csrf_token %}
-        <p>Username:<br> <input name="username" type="text" required /></p>
-        <p>Password:<br> <input name="password" type="password" required /></p>
-        <input type="submit" value="Login" />
+    {% csrf_token %}
+    <input type="hidden" name="next" value="{{ next }}">
+    <p>Имя пользователя: <input type="text" name="username" required></p>
+    <p>Пароль: <input type="password" name="password" required></p>
+    <button type="submit">Войти</button>
     </form>
 
     {% if error %}
@@ -18,3 +19,5 @@
     {% endif %}
 </body>
 </html>
+
+
