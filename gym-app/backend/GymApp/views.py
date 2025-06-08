@@ -4,7 +4,20 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.utils.timezone import now, timedelta
-from .models import UserMembership, Membership, Event
+from .models import UserMembership, Membership, Event, User
+from rest_framework import generics, viewsets
+from rest_framework.permissions import IsAuthenticated
+from .serializers import RegisterSerializer, MembershipSerializer
+
+class RegisterView(generics.CreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = RegisterSerializer
+    permission_classes = []
+
+class MembershipViewSet(viewsets.ModelViewSet):
+    queryset = Membership.objects.all()
+    serializer_class = MembershipSerializer
+    permission_classes = [IsAuthenticated]
 
 def home(request):
     memberships = Membership.objects.all()
