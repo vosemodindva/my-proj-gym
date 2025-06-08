@@ -6,8 +6,8 @@ from django.contrib.auth.decorators import login_required
 from django.utils.timezone import now, timedelta
 from .models import UserMembership, Membership, Event, User
 from rest_framework import generics, viewsets
-from rest_framework.permissions import IsAuthenticated
 from .serializers import RegisterSerializer, MembershipSerializer
+from .permissions import IsAdminOrReadOnly, IsAdminToken
 
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
@@ -17,7 +17,7 @@ class RegisterView(generics.CreateAPIView):
 class MembershipViewSet(viewsets.ModelViewSet):
     queryset = Membership.objects.all()
     serializer_class = MembershipSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdminToken]
 
 def home(request):
     memberships = Membership.objects.all()

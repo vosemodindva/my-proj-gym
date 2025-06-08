@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from rest_framework_simplejwt.tokens import RefreshToken
-from .models import User, Membership  # или from django.contrib.auth import get_user_model
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from .models import User, Membership
 
 class RegisterSerializer(serializers.ModelSerializer):
     class Meta:
@@ -29,3 +30,18 @@ class MembershipSerializer(serializers.ModelSerializer):
     class Meta:
         model = Membership
         fields = '__all__'
+
+class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+
+        # Добавим кастомное поле "role"
+        token['role'] = 'admin' if user.is_staff else 'user'
+
+        return token
+
+    def validate(self, attrs):
+        data = super().validate(attrs)
+        data['role'] = 'admin' if self.user.is_staff else 'user'
+        return data

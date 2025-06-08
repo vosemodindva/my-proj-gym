@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'django_filters',
-    'GymApp'
+    'GymApp',
+    'drf_yasg',
 ]
 
 MIDDLEWARE = [
