@@ -1,33 +1,40 @@
-import { useEffect, useState } from "react";
-import axios from "../api/axios";
+import React from "react";
+import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 function Profile() {
-  const [userData, setUserData] = useState(null);
+  const { userInfo, isAuthenticated } = useAuth();
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    axios.get("profile/")
-      .then((res) => setUserData(res.data))
-      .catch((err) => console.error("Ошибка загрузки профиля", err));
-  }, []);
+  if (!isAuthenticated) {
+    navigate("/login");
+    return null;
+  }
 
-  if (!userData) return <p>Загрузка...</p>;
+  if (!userInfo) {
+    return (
+      <div className="container mt-4">
+        <p>Загрузка данных пользователя...</p>
+      </div>
+    );
+  }
+
+  const { username, email, is_superuser, is_staff, membership } = userInfo;
 
   return (
-    <div>
-      <h2>Профиль пользователя</h2>
-      <p><strong>Имя:</strong> {userData.username}</p>
-      <p><strong>Email:</strong> {userData.email}</p>
-      <p><strong>Телефон:</strong> {userData.phone || "не указан"}</p>
-      <p><strong>Роль:</strong> {userData.is_superuser ? "Администратор" : userData.is_staff ? "Сотрудник" : "Пользователь"}</p>
+    <div className="container mt-4">
+      <h2>Профиль</h2>
+      <p><strong>Имя пользователя:</strong> {username}</p>
+      <p><strong>Email:</strong> {email}</p>
+      <p><strong>Роль:</strong> {is_superuser ? "Админ" : is_staff ? "Сотрудник" : "Пользователь"}</p>
 
-      {userData.membership ? (
-        <div>
-          <h3>Абонемент</h3>
-          <p><strong>Название:</strong> {userData.membership.name}</p>
-          <p><strong>Длительность:</strong> {userData.membership.duration_days} дней</p>
-        </div>
+      {membership ? (
+        <>
+          <p><strong>Абонемент:</strong> {membership.name}</p>
+          <p><strong>Срок действия:</strong> {membership.duration_days} дней</p>
+        </>
       ) : (
-        <p>У вас нет активного абонемента.</p>
+        <p><em>У вас нет активного абонемента.</em></p>
       )}
     </div>
   );

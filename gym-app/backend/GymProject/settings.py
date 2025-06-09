@@ -16,7 +16,6 @@ import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
@@ -59,8 +58,10 @@ ROOT_URLCONF = 'GymProject.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],  # можно оставить пустым
-        'APP_DIRS': True,  # обязательно True!
+        'DIRS': [
+            BASE_DIR.parent / 'frontend' / 'build',  # ✅ путь к React
+        ],
+        'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.request',
@@ -151,10 +152,14 @@ SWAGGER_SETTINGS = {
     },
 }
 
+BASE_DIR = Path(__file__).resolve().parent.parent
+
 TEMPLATES[0]['DIRS'] = [
-    os.path.abspath(os.path.join(BASE_DIR, '..', 'frontend', 'build')),
+    BASE_DIR.parent / 'frontend' / 'build',
 ]
 
 STATICFILES_DIRS = [
-    os.path.abspath(os.path.join(BASE_DIR, '..', 'frontend', 'build', 'static')),
+    BASE_DIR.parent / 'frontend' / 'build' / 'static',
 ]
+
+STATIC_URL = '/static/'

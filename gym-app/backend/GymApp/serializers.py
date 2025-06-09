@@ -57,7 +57,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'phone', 'is_staff', 'is_superuser', 'membership']
+        fields = ['username', 'email', 'is_staff', 'is_superuser', 'membership']
 
     def get_membership(self, user):
         user_membership = getattr(user, 'usermembership', None)
