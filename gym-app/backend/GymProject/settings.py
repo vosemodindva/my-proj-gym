@@ -150,3 +150,11 @@ SWAGGER_SETTINGS = {
         }
     },
 }
+
+TEMPLATES[0]['DIRS'] = [
+    os.path.abspath(os.path.join(BASE_DIR, '..', 'frontend', 'build')),
+]
+
+STATICFILES_DIRS = [
+    os.path.abspath(os.path.join(BASE_DIR, '..', 'frontend', 'build', 'static')),
+]

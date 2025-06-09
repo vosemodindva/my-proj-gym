@@ -51,3 +51,19 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         data = super().validate(attrs)
         data['role'] = 'admin' if self.user.is_staff else 'user'
         return data
+    
+class UserSerializer(serializers.ModelSerializer):
+    membership = serializers.SerializerMethodField()
+
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'phone', 'is_staff', 'is_superuser', 'membership']
+
+    def get_membership(self, user):
+        user_membership = getattr(user, 'usermembership', None)
+        if user_membership and user_membership.membership:
+            return {
+                "name": user_membership.membership.name,
+                "duration_days": user_membership.membership.duration_days
+            }
+        return None
