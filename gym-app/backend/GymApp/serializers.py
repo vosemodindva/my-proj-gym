@@ -27,6 +27,12 @@ class RegisterSerializer(serializers.ModelSerializer):
         }
     
 class MembershipSerializer(serializers.ModelSerializer):
+    """
+    Сериализатор абонементов:
+    - name: Название абонемента
+    - duration_days: Длительность в днях
+    - price: Стоимость
+    """
     class Meta:
         model = Membership
         fields = '__all__'
