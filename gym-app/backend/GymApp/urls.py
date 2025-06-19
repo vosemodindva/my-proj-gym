@@ -1,7 +1,7 @@
 from django.urls import path, re_path
 from .views import (
     RegisterView, MembershipViewSet, ProfileAPIView,
-    FrontendAppView
+    FrontendAppView, BuyMembershipAPIView
 )
 from rest_framework.routers import DefaultRouter
 from .serializers import CustomTokenObtainPairSerializer
@@ -25,6 +25,8 @@ urlpatterns = [
 
     # React SPA fallback (все остальные URL → index.html)
     re_path(r"^(?!api/).*", FrontendAppView.as_view(), name="spa"),
+
+    path('api/memberships/buy/<int:membership_id>/', BuyMembershipAPIView.as_view(), name='buy_membership'),
 ]
 
 urlpatterns += router.urls

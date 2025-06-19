@@ -41,12 +41,14 @@ INSTALLED_APPS = [
     'django_filters',
     'GymApp',
     'drf_yasg',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',                     # ← ОБЯЗАТЕЛЬНО первым!
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
+    'django.middleware.common.CommonMiddleware',                 # ← оставить только один раз!
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -163,3 +165,18 @@ STATICFILES_DIRS = [
 ]
 
 STATIC_URL = '/static/'
+
+CORS_ALLOW_ALL_ORIGINS = True  # ← временно для отладки
+CORS_ALLOW_CREDENTIALS = True
+
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+]

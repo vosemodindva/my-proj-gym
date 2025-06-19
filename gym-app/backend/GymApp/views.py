@@ -9,9 +9,10 @@ from .serializers import (
     MembershipSerializer,
     UserSerializer,
 )
-from .permissions import IsAdminToken
+from .permissions import IsAdminOrReadOnly
 from .models import Membership
 from django.contrib.auth.models import User
+from .services import buy_membership_for_user
 
 
 class FrontendAppView(View):
@@ -36,4 +37,13 @@ class RegisterView(generics.CreateAPIView):
 class MembershipViewSet(viewsets.ModelViewSet):
     queryset = Membership.objects.all()
     serializer_class = MembershipSerializer
-    permission_classes = [IsAdminToken]
+    permission_classes = [IsAdminOrReadOnly]
+
+
+class BuyMembershipAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, membership_id):
+        print(request.user)
+        result = buy_membership_for_user(request.user, membership_id)
+        return Response(result['data'], status=result['status'])

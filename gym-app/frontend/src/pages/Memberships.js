@@ -18,7 +18,7 @@ function Memberships() {
   if (!access) return navigate("/login");
 
   try {
-    await axios.post(`/buy/${id}/`, {}, {
+    await axios.post(`/memberships/buy/${id}/`, {}, {
       headers: { Authorization: `Bearer ${access}` },
     });
 

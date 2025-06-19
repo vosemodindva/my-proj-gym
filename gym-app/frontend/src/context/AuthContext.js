@@ -1,6 +1,6 @@
-import { createContext, useContext, useState } from "react";
 import axios from "../api/axios";
-import jwt_decode from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
+import React, { useEffect, useState, createContext, useContext } from "react";
 
 const AuthContext = createContext();
 
@@ -64,7 +64,7 @@ export function AuthProvider({ children }) {
   if (!access) return;
 
   try {
-    const decoded = jwt_decode(access);
+    const decoded = jwtDecode(access);
     const exp = decoded.exp * 1000; // время истечения в ms
     const now = Date.now();
     const delay = exp - now - 10_000; // обновим за 10 секунд до
