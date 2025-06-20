@@ -40,3 +40,10 @@ class Event(models.Model):
     def participant_count(self):
         return self.participants.count()
 
+class Trainer(models.Model):
+    name = models.CharField(max_length=100)
+    bio = models.TextField(blank=True)
+    photo = models.ImageField(upload_to="trainers/", blank=True, null=True)
+
+    def __str__(self):
+        return self.name

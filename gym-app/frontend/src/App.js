@@ -6,6 +6,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Memberships from "./pages/Memberships";
 import Trainers from "./pages/Trainers";
+import Events from "./pages/Events";
 import { AuthProvider } from "./context/AuthContext";
 import PrivateRoute from "./components/PrivateRoute";
 
@@ -22,6 +23,7 @@ function App() {
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/memberships" element={<Memberships />} />
+                <Route path="/events" element={<Events />} />
 
                 {/* Только для авторизованных */}
                 <Route

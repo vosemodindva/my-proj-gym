@@ -8,9 +8,11 @@ from .serializers import (
     RegisterSerializer,
     MembershipSerializer,
     UserSerializer,
+    TrainerSerializer,
+    EventSerializer,
 )
 from .permissions import IsAdminOrReadOnly
-from .models import Membership
+from .models import Membership, Trainer, Event
 from django.contrib.auth.models import User
 from .services import buy_membership_for_user
 
@@ -38,6 +40,16 @@ class MembershipViewSet(viewsets.ModelViewSet):
     queryset = Membership.objects.all()
     serializer_class = MembershipSerializer
     permission_classes = [IsAdminOrReadOnly]
+
+
+class TrainerViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Trainer.objects.all()
+    serializer_class = TrainerSerializer
+
+
+class EventViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Event.objects.all()
+    serializer_class = EventSerializer
 
 
 class BuyMembershipAPIView(APIView):

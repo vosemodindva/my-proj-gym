@@ -22,6 +22,9 @@ function Navbar() {
           <li className="nav-item">
             <Link className="nav-link" to="/trainers">Тренеры</Link>
           </li>
+          <li className="nav-item">
+            <Link className="nav-link" to="/events">Мероприятия</Link>
+          </li>
         </ul>
         <ul className="navbar-nav ms-auto">
           {isAuthenticated ? (

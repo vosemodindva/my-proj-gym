@@ -1,7 +1,8 @@
 from django.urls import path, re_path
 from .views import (
     RegisterView, MembershipViewSet, ProfileAPIView,
-    FrontendAppView, BuyMembershipAPIView
+    FrontendAppView, BuyMembershipAPIView, TrainerViewSet,
+    EventViewSet
 )
 from rest_framework.routers import DefaultRouter
 from .serializers import CustomTokenObtainPairSerializer
@@ -12,6 +13,8 @@ from rest_framework_simplejwt.views import (
 
 router = DefaultRouter()
 router.register(r'api/memberships', MembershipViewSet, basename='memberships')
+router.register(r'api/trainers', TrainerViewSet, basename='trainers')
+router.register(r'api/events', EventViewSet, basename='events')
 
 class CustomTokenView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
@@ -24,7 +27,7 @@ urlpatterns = [
     path('api/profile/', ProfileAPIView.as_view(), name='profile'),
 
     # React SPA fallback (все остальные URL → index.html)
-    re_path(r"^(?!api/).*", FrontendAppView.as_view(), name="spa"),
+    re_path(r"^(?!api/|media/).*", FrontendAppView.as_view(), name="spa"),
 
     path('api/memberships/buy/<int:membership_id>/', BuyMembershipAPIView.as_view(), name='buy_membership'),
 ]
