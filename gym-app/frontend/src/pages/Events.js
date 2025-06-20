@@ -28,6 +28,8 @@ export default function Events() {
               )}
               <div className="card-body">
                 <h5 className="card-title">{event.title}</h5>
+                <p className="card-text">Дата: {event.date}</p>
+                <p className="card-text">Возраст: {event.age_limit}+</p>
                 <p className="card-text">{event.description}</p>
               </div>
             </div>

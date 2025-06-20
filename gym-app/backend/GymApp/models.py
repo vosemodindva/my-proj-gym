@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils.timezone import now, timedelta
+from datetime import date
+
 
 class Membership(models.Model):
     name = models.CharField(max_length=100)
@@ -32,6 +34,8 @@ class Event(models.Model):
     title = models.CharField(max_length=100)
     description = models.TextField()
     image = models.ImageField(upload_to='event_images/')
+    date = models.DateField(default=date.today, verbose_name="Дата проведения")
+    age_limit = models.PositiveIntegerField(default=0, verbose_name="Возрастное ограничение")
     participants = models.ManyToManyField(User, blank=True)
 
     def __str__(self):
@@ -43,6 +47,7 @@ class Event(models.Model):
 class Trainer(models.Model):
     name = models.CharField(max_length=100)
     bio = models.TextField(blank=True)
+    experience = models.PositiveIntegerField(default=0, verbose_name="Стаж (лет)")
     photo = models.ImageField(upload_to="trainers/", blank=True, null=True)
 
     def __str__(self):

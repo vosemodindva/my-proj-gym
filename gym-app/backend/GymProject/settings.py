@@ -154,6 +154,8 @@ SWAGGER_SETTINGS = {
     },
 }
 
+SWAGGER_USE_COMPAT_RENDERERS = False
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 TEMPLATES[0]['DIRS'] = [
