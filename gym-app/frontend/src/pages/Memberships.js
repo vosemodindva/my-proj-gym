@@ -38,9 +38,7 @@ function Memberships() {
             <div className="card h-100">
               <div className="card-body">
                 <h5 className="card-title">{m.name}</h5>
-                <p className="card-text">Описание: {m.description}</p>
                 <p className="card-text">Длительность: {m.duration_days} дней</p>
-                <p className="card-text">Цена: {m.price} ₽</p>
                 <button className="btn btn-primary" onClick={() => handleBuy(m.id)}>
                   Купить
                 </button>

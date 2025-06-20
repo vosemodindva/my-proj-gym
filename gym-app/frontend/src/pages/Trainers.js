@@ -26,7 +26,6 @@ export default function Trainers() {
               )}
               <div className="card-body">
                 <h5 className="card-title">{trainer.name}</h5>
-                <p className="card-text">Стаж: {trainer.experience} лет</p>
                 <p className="card-text">{trainer.bio}</p>
               </div>
             </div>
