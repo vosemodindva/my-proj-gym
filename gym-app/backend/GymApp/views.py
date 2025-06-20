@@ -1,8 +1,9 @@
 from django.views.generic import View
 from django.shortcuts import render
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
-from rest_framework import generics, viewsets
+from rest_framework import generics, viewsets, filters
 from rest_framework.response import Response
 from .serializers import (
     RegisterSerializer,
@@ -50,6 +51,8 @@ class TrainerViewSet(viewsets.ReadOnlyModelViewSet):
 class EventViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Event.objects.all()
     serializer_class = EventSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['age_limit', 'date']
 
 
 class BuyMembershipAPIView(APIView):
