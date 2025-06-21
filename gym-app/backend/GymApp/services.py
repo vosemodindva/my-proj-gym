@@ -1,5 +1,6 @@
 from django.shortcuts import get_object_or_404
-from .models import Membership, UserMembership
+from django.contrib.auth import get_user_model
+from .models import Membership, UserMembership, AuditLog
 from django.utils.timezone import now
 from datetime import timedelta
 from rest_framework import status
@@ -21,7 +22,30 @@ def buy_membership_for_user(user, membership_id):
         valid_until=valid_until
     )
 
+    # ✅ Логирование действия
+    AuditLog.objects.create(
+        user=user,
+        action=f"Куплен абонемент: {membership.name}"
+    )
+
     return {
         'status': status.HTTP_201_CREATED,
         'data': {'detail': 'Абонемент успешно куплен!'}
     }
+
+User = get_user_model()
+
+def register_user(username, email, password):
+    user = User.objects.create_user(
+        username=username,
+        email=email,
+        password=password
+    )
+
+    # логируем регистрацию
+    AuditLog.objects.create(
+        user=user,
+        action="Пользователь зарегистрировался"
+    )
+
+    return user

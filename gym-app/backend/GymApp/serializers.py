@@ -1,7 +1,8 @@
 from rest_framework import serializers
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from .models import User, Membership, Trainer, Event
+from .models import User, Membership, Trainer, Event, AuditLog
+from .services import register_user
 
 class TrainerSerializer(serializers.ModelSerializer):
     class Meta:
@@ -20,13 +21,12 @@ class RegisterSerializer(serializers.ModelSerializer):
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
-        user = User.objects.create_user(
-            username=validated_data['username'],
-            email=validated_data.get('email'),
-            password=validated_data['password']
-        )
-        return user
-
+        def create(self, validated_data):
+            return register_user(
+                username=validated_data['username'],
+                email=validated_data.get('email'),
+                password=validated_data['password']
+            )
     def to_representation(self, instance):
         refresh = RefreshToken.for_user(instance)
         return {
@@ -77,3 +77,10 @@ class UserSerializer(serializers.ModelSerializer):
                 "duration_days": user_membership.membership.duration_days
             }
         return None
+    
+
+class AuditLogSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AuditLog
+        fields = '__all__'
+        read_only_fields = fields

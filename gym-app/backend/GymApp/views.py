@@ -3,7 +3,7 @@ from django.shortcuts import render
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
-from rest_framework import generics, viewsets, filters
+from rest_framework import generics, viewsets
 from rest_framework.response import Response
 from .serializers import (
     RegisterSerializer,
@@ -11,9 +11,10 @@ from .serializers import (
     UserSerializer,
     TrainerSerializer,
     EventSerializer,
+    AuditLogSerializer,
 )
-from .permissions import IsAdminOrReadOnly
-from .models import Membership, Trainer, Event
+from .permissions import IsAdminOrReadOnly, IsAdminToken
+from .models import Membership, Trainer, Event, AuditLog
 from django.contrib.auth.models import User
 from .services import buy_membership_for_user
 
@@ -62,3 +63,9 @@ class BuyMembershipAPIView(APIView):
         print(request.user)
         result = buy_membership_for_user(request.user, membership_id)
         return Response(result['data'], status=result['status'])
+    
+
+class AuditLogViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = AuditLog.objects.all().order_by('-timestamp')
+    serializer_class = AuditLogSerializer
+    permission_classes = [IsAdminToken]
