@@ -27,8 +27,7 @@ urlpatterns = [
     path('api/profile/', ProfileAPIView.as_view(), name='profile'),
 
     # React SPA fallback (все остальные URL → index.html)
-    re_path(r"^(?!api/|media/).*", FrontendAppView.as_view(), name="spa"),
-
+    re_path(r"^(?!api/|media/|admin/?|favicon\.ico).*", FrontendAppView.as_view(), name="spa"),
     path('api/memberships/buy/<int:membership_id>/', BuyMembershipAPIView.as_view(), name='buy_membership'),
 ]
 
