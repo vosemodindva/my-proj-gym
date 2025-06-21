@@ -1,7 +1,7 @@
 import pytest
 from django.utils.timezone import now, timedelta
 from django.contrib.auth import get_user_model
-from GymApp.models import Membership, UserMembership
+from GymApp.models import Membership, UserMembership, Event, Trainer
 
 User = get_user_model()
 
@@ -56,3 +56,18 @@ def test_user_membership_creation_and_methods():
 
     assert expired.is_active() is False
     assert expired.days_remaining() == 0
+
+@pytest.mark.django_db
+def test_event_str_and_participant_count():
+    user = User.objects.create_user(username="eventuser", password="123")
+    event = Event.objects.create(
+        title="Йога", description="Утренняя", date=now().date(), age_limit=18
+    )
+    event.participants.add(user)
+    assert str(event) == "Йога"
+    assert event.participant_count() == 1
+
+@pytest.mark.django_db
+def test_trainer_str():
+    t = Trainer.objects.create(name="Алексей", bio="Мастер спорта", experience=5)
+    assert str(t) == "Алексей"

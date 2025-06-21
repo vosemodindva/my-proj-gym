@@ -1,10 +1,12 @@
 import pytest
 from django.contrib.auth import get_user_model
-from GymApp.models import Membership, UserMembership
+from GymApp.models import Membership, UserMembership, Trainer, Event
 from GymApp.serializers import (
     RegisterSerializer,
     MembershipSerializer,
-    UserSerializer
+    UserSerializer,
+    EventSerializer,
+    TrainerSerializer
 )
 from django.utils.timezone import now, timedelta
 
@@ -55,3 +57,24 @@ def test_user_serializer_with_membership():
     assert data["username"] == "has_plan"
     assert data["membership"]["name"] == "Премиум"
     assert data["membership"]["duration_days"] == 60
+
+@pytest.mark.django_db
+def test_trainer_serializer_output():
+    trainer = Trainer.objects.create(name="Сергей", bio="Сила и выносливость", experience=4)
+    data = TrainerSerializer(trainer).data
+
+    assert data["name"] == "Сергей"
+    assert data["experience"] == 4
+    assert "bio" in data
+
+@pytest.mark.django_db
+def test_event_serializer_output():
+    event = Event.objects.create(
+        title="Функционалка", description="Тренировка всего тела", date=now().date(), age_limit=16
+    )
+    data = EventSerializer(event).data
+
+    assert data["title"] == "Функционалка"
+    assert data["age_limit"] == 16
+    assert "description" in data
+    assert "date" in data
