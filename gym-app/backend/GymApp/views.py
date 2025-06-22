@@ -4,7 +4,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import generics, viewsets, decorators
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import action
 from rest_framework.response import Response
 from .serializers import (
     RegisterSerializer,
@@ -13,6 +13,7 @@ from .serializers import (
     TrainerSerializer,
     EventSerializer,
     AuditLogSerializer,
+    TrainerProfileSerializer,
 )
 from .permissions import IsAdminOrReadOnly, IsAdminToken, IsTrainer, IsTrainerOwner
 from .models import Membership, Trainer, Event, AuditLog
@@ -104,3 +105,11 @@ class TrainerViewSet(viewsets.ModelViewSet):
         clients = get_trainer_clients(request.user)
         data = [{'id': u.id, 'username': u.username, 'email': u.email} for u in clients]
         return Response(data)
+    
+    @action(detail=False, methods=["get"], url_path="me")
+    def my_profile(self, request):
+        if not hasattr(request.user, "trainer_profile"):
+            return Response({"detail": "Вы не являетесь тренером."}, status=403)
+        
+        serializer = TrainerProfileSerializer(request.user.trainer_profile)
+        return Response(serializer.data)

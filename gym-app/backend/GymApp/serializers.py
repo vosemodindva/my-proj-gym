@@ -21,12 +21,12 @@ class RegisterSerializer(serializers.ModelSerializer):
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
-        def create(self, validated_data):
-            return register_user(
-                username=validated_data['username'],
-                email=validated_data.get('email'),
-                password=validated_data['password']
-            )
+        return register_user(
+            username=validated_data['username'],
+            email=validated_data.get('email'),
+            password=validated_data['password']
+        )
+        
     def to_representation(self, instance):
         refresh = RefreshToken.for_user(instance)
         return {
@@ -84,3 +84,18 @@ class AuditLogSerializer(serializers.ModelSerializer):
         model = AuditLog
         fields = '__all__'
         read_only_fields = fields
+
+
+class ClientShortSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'email', 'date_joined']
+
+
+class TrainerProfileSerializer(serializers.ModelSerializer):
+    user = serializers.StringRelatedField()
+    clients = ClientShortSerializer(many=True)
+
+    class Meta:
+        model = Trainer
+        fields = ['id', 'user', 'name', 'experience', 'clients']

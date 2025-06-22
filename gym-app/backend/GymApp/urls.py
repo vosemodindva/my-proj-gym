@@ -2,8 +2,7 @@ from django.urls import path, re_path
 from .views import (
     RegisterView, MembershipViewSet, ProfileAPIView,
     FrontendAppView, BuyMembershipAPIView, TrainerViewSet,
-    EventViewSet, assign_trainer, unassign_trainer,
-    my_trainers, my_clients, 
+    EventViewSet,
 
 )
 from rest_framework.routers import DefaultRouter

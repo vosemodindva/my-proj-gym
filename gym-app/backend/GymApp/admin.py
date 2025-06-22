@@ -1,5 +1,8 @@
 from django.contrib import admin
+from django.contrib.auth.models import User
 from .models import Membership, UserMembership, Event, Trainer, AuditLog
+from .admin_filters import IsTrainerFilter
+from .admin_actions import make_trainers, remove_trainers
 
 
 @admin.register(Membership)
@@ -80,3 +83,17 @@ class AuditLogAdmin(admin.ModelAdmin):
 
     def has_delete_permission(self, request, obj=None):
         return False
+    
+
+class CustomUserAdmin(admin.ModelAdmin):
+    list_display = ('username', 'email', 'is_staff', 'is_superuser', 'is_trainer')
+    actions = [make_trainers, remove_trainers]
+    list_filter = ('is_staff', 'is_superuser', IsTrainerFilter)
+
+    @admin.display(boolean=True, description="Тренер")
+    def is_trainer(self, obj):
+        return hasattr(obj, 'trainer_profile')
+
+
+admin.site.unregister(User)
+admin.site.register(User, CustomUserAdmin)
