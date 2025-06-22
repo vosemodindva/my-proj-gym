@@ -1,6 +1,6 @@
 from django.shortcuts import get_object_or_404
 from django.contrib.auth import get_user_model
-from .models import Membership, UserMembership, AuditLog
+from .models import Membership, UserMembership, AuditLog, Trainer
 from django.utils.timezone import now
 from datetime import timedelta
 from rest_framework import status
@@ -49,3 +49,60 @@ def register_user(username, email, password):
     )
 
     return user
+
+
+def assign_trainer_to_user(trainer_id, user):
+    try:
+        trainer = Trainer.objects.get(id=trainer_id)
+
+        if trainer.clients.filter(id=user.id).exists():
+            return {
+                'status': status.HTTP_400_BAD_REQUEST,
+                'data': {'detail': 'Вы уже записаны к этому тренеру'}
+            }
+
+        trainer.clients.add(user)
+        return {
+            'status': status.HTTP_200_OK,
+            'data': {'detail': 'Вы успешно записались к тренеру'}
+        }
+
+    except Trainer.DoesNotExist:
+        return {
+            'status': status.HTTP_404_NOT_FOUND,
+            'data': {'detail': 'Тренер не найден'}
+        }
+
+
+def unassign_trainer_from_user(trainer_id, user):
+    try:
+        trainer = Trainer.objects.get(id=trainer_id)
+
+        if not trainer.clients.filter(id=user.id).exists():
+            return {
+                'status': status.HTTP_400_BAD_REQUEST,
+                'data': {'detail': 'Вы не записаны к этому тренеру'}
+            }
+
+        trainer.clients.remove(user)
+        return {
+            'status': status.HTTP_200_OK,
+            'data': {'detail': 'Запись отменена'}
+        }
+
+    except Trainer.DoesNotExist:
+        return {
+            'status': status.HTTP_404_NOT_FOUND,
+            'data': {'detail': 'Тренер не найден'}
+        }
+    
+
+def get_user_trainers(user):
+    return user.assigned_trainers.all()
+
+
+def get_trainer_clients(trainer_user):
+    try:
+        return trainer_user.trainer_profile.clients.all()
+    except Trainer.DoesNotExist:
+        return []
