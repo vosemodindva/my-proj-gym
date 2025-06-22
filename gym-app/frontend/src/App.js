@@ -15,7 +15,7 @@ function App() {
     <AuthProvider>
       <Router>
         <Navbar />
-        <div className="container mt-4">
+        <div className="mt-4">
             <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/memberships" element={<Memberships />} />
