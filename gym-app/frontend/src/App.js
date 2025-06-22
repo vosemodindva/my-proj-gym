@@ -9,6 +9,7 @@ import Trainers from "./pages/Trainers";
 import Events from "./pages/Events";
 import { AuthProvider } from "./context/AuthContext";
 import PrivateRoute from "./components/PrivateRoute";
+import TrainerProfile from "./components/TrainerProfile";
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
                 <Route path="/register" element={<Register />} />
                 <Route path="/memberships" element={<Memberships />} />
                 <Route path="/events" element={<Events />} />
+                <Route path="/trainer/profile" element={<TrainerProfile />} />
 
                 {/* Только для авторизованных */}
                 <Route

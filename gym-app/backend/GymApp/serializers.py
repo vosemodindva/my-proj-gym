@@ -93,9 +93,27 @@ class ClientShortSerializer(serializers.ModelSerializer):
 
 
 class TrainerProfileSerializer(serializers.ModelSerializer):
-    user = serializers.StringRelatedField()
-    clients = ClientShortSerializer(many=True)
+    clients = ClientShortSerializer(many=True, read_only=True)
+    experience_years = serializers.SerializerMethodField()
+    client_count = serializers.SerializerMethodField()
+    photo_url = serializers.SerializerMethodField()
 
     class Meta:
         model = Trainer
-        fields = ['id', 'user', 'name', 'experience', 'clients']
+        fields = [
+            'id', 'user', 'name', 'experience', 'experience_years',
+            'description', 'photo', 'photo_url',
+            'client_count', 'clients'
+        ]
+        read_only_fields = ['user', 'clients', 'experience_years', 'client_count', 'photo_url']
+
+    def get_experience_years(self, obj):
+        return f"{obj.experience} лет"
+
+    def get_client_count(self, obj):
+        return obj.clients.count()
+
+    def get_photo_url(self, obj):
+        if obj.photo:
+            return obj.photo.url
+        return None

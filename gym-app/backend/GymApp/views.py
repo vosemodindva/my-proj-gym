@@ -106,10 +106,19 @@ class TrainerViewSet(viewsets.ModelViewSet):
         data = [{'id': u.id, 'username': u.username, 'email': u.email} for u in clients]
         return Response(data)
     
-    @action(detail=False, methods=["get"], url_path="me")
+    @action(detail=False, methods=["get", "put"], url_path="me")
     def my_profile(self, request):
         if not hasattr(request.user, "trainer_profile"):
             return Response({"detail": "Вы не являетесь тренером."}, status=403)
         
-        serializer = TrainerProfileSerializer(request.user.trainer_profile)
-        return Response(serializer.data)
+        trainer = request.user.trainer_profile
+
+        if request.method == "GET":
+            serializer = TrainerProfileSerializer(trainer)
+            return Response(serializer.data)
+
+        serializer = TrainerProfileSerializer(trainer, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=400)
