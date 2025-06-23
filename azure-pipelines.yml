@@ -4,17 +4,19 @@
 # https://aka.ms/yaml
 
 trigger:
-- main
+  branches:
+    include:
+      - develop
 
-pool:
-  vmImage: ubuntu-latest
-  name: Default
-
-steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
-
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+stages:
+  - stage: BuildAndDeploy
+    jobs:
+      - job: BuildOnMyServer
+        pool:
+          name: Default  # Имя твоего self-hosted pool
+        steps:
+          - script: |
+              cd gym-app
+              docker-compose down
+              docker-compose up -d --build
+            displayName: "Build and deploy on local server"
