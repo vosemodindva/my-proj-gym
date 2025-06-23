@@ -10,6 +10,24 @@ export default function Trainers() {
       .catch(err => console.error("Ошибка загрузки тренеров", err));
   }, []);
 
+
+  const assignTrainer = (trainerId) => {
+    const token = localStorage.getItem("access");
+
+    axios
+      .post(`/trainers/${trainerId}/assign/`, {}, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => alert(res.data.detail))
+      .catch((err) => {
+        const msg = err.response?.data?.detail || "Ошибка при записи";
+        alert(msg);
+      });
+  };
+  
+
   return (
     <div className="container mt-4">
       <h2>Тренеры</h2>
@@ -27,7 +45,13 @@ export default function Trainers() {
               <div className="card-body">
                 <h5 className="card-title">{trainer.name}</h5>
                 <p className="card-text">Стаж: {trainer.experience} лет</p>
-                <p className="card-text">{trainer.bio}</p>
+                <p className="card-text">{trainer.description}</p>
+                <button
+                  className="btn btn-primary"
+                  onClick={() => assignTrainer(trainer.id)}
+                >
+                  Записаться
+                </button>
               </div>
             </div>
           </div>

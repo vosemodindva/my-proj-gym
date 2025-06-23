@@ -4,6 +4,9 @@ from .models import Membership, UserMembership, AuditLog, Trainer
 from django.utils.timezone import now
 from datetime import timedelta
 from rest_framework import status
+from rest_framework.decorators import action
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
 
 def buy_membership_for_user(user, membership_id):
     membership = get_object_or_404(Membership, id=membership_id)
@@ -106,3 +109,14 @@ def get_trainer_clients(trainer_user):
         return trainer_user.trainer_profile.clients.all()
     except Trainer.DoesNotExist:
         return []
+    
+@action(detail=True, methods=["post"], permission_classes=[IsAuthenticated])
+def assign(self, request, pk=None):
+    trainer = self.get_object()
+    user = request.user
+
+    if trainer.clients.filter(id=user.id).exists():
+        return Response({"detail": "Вы уже записаны к этому тренеру."}, status=400)
+
+    trainer.clients.add(user)
+    return Response({"detail": "Вы успешно записались к тренеру!"})
