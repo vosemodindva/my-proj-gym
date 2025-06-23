@@ -25,8 +25,33 @@ const TrainerProfile = () => {
           description: res.data.description || "",
           photo: null,
         });
+      })
+      .catch((error) => {
+        console.error("Ошибка при загрузке профиля тренера:", error);
       });
   }, []);
+
+  const handleRemoveClient = (clientId) => {
+    if (!window.confirm("Удалить этого клиента?")) return;
+
+    axios
+      .post(
+        `/api/trainers/remove_client/`,
+        { client_id: clientId },
+        { headers: { Authorization: `Bearer ${token}` } }
+      )
+      .then(() => {
+        alert("Клиент удален");
+        setProfile((prev) => ({
+          ...prev,
+          clients: prev.clients.filter((c) => c.client.id !== clientId),
+          client_count: prev.client_count - 1,
+        }));
+      })
+      .catch(() => {
+        alert("Ошибка при удалении клиента");
+      });
+  };
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
@@ -112,24 +137,27 @@ const TrainerProfile = () => {
       <p><strong>Клиентов:</strong> {profile.client_count}</p>
 
       <h3>Клиенты</h3>
-      {profile.clients.length === 0 ? (
-        <p>Пока нет клиентов.</p>
-      ) : (
+      {Array.isArray(profile.clients) && profile.clients.length > 0 ? (
         <table border="1" cellPadding="8" style={{ borderCollapse: "collapse" }}>
           <thead>
             <tr>
               <th>Имя</th>
               <th>Email</th>
+              <th>Время</th>
               <th>Действие</th>
             </tr>
           </thead>
           <tbody>
-            {profile.clients.map((client) => (
-              <tr key={client.id}>
-                <td>{client.username}</td>
-                <td>{client.email}</td>
+            {profile.clients.map((c, index) => (
+              <tr key={index}>
+                <td>{c.client.username}</td>
+                <td>{c.client.email}</td>
+                <td>{new Date(c.appointment_time).toLocaleString()}</td>
                 <td>
-                  <button onClick={() => handleRemoveClient(client.id)} style={{ color: "red" }}>
+                  <button
+                    className="btn btn-danger btn-sm"
+                    onClick={() => handleRemoveClient(c.client.id)}
+                  >
                     Удалить
                   </button>
                 </td>
@@ -137,6 +165,8 @@ const TrainerProfile = () => {
             ))}
           </tbody>
         </table>
+      ) : (
+        <p>Нет клиентов</p>
       )}
 
       <h3>Редактировать профиль</h3>
@@ -172,29 +202,5 @@ const TrainerProfile = () => {
     </div>
   );
 };
-
-
-const handleRemoveClient = (clientId) => {
-  if (!window.confirm("Удалить этого клиента?")) return;
-
-  axios
-    .post(
-      `/api/trainers/remove_client/`,
-      { client_id: clientId },
-      { headers: { Authorization: `Bearer ${token}` } }
-    )
-    .then(() => {
-      alert("Клиент удален");
-      setProfile({
-        ...profile,
-        clients: profile.clients.filter((c) => c.id !== clientId),
-        client_count: profile.client_count - 1,
-      });
-    })
-    .catch(() => {
-      alert("Ошибка при удалении клиента");
-    });
-};
-
 
 export default TrainerProfile;

@@ -1,8 +1,11 @@
 from rest_framework import serializers
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from .models import User, Membership, Trainer, Event, AuditLog
+from .models import User, Membership, Trainer, Event, AuditLog, TrainerClient
+from django.contrib.auth import get_user_model
 from .services import register_user
+
+User = get_user_model()
 
 class TrainerSerializer(serializers.ModelSerializer):
     class Meta:
@@ -69,31 +72,52 @@ class ClientShortSerializer(serializers.ModelSerializer):
         fields = ['id', 'username', 'email', 'date_joined']
 
 
+class SimpleUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'email']
+
+class TrainerClientSerializer(serializers.ModelSerializer):
+    client = SimpleUserSerializer()
+
+    class Meta:
+        model = TrainerClient
+        fields = ['client', 'appointment_time']
+
+
 class TrainerProfileSerializer(serializers.ModelSerializer):
-    clients = ClientShortSerializer(many=True, read_only=True)
-    experience_years = serializers.SerializerMethodField()
     client_count = serializers.SerializerMethodField()
+    clients = serializers.SerializerMethodField()
     photo_url = serializers.SerializerMethodField()
+    experience_years = serializers.SerializerMethodField()
 
     class Meta:
         model = Trainer
         fields = [
-            'id', 'user', 'name', 'experience', 'experience_years',
-            'description', 'photo', 'photo_url',
-            'client_count', 'clients'
+            "id", "user", "name", "experience", "experience_years",
+            "description", "photo", "photo_url", "client_count", "clients"
         ]
-        read_only_fields = ['user', 'clients', 'experience_years', 'client_count', 'photo_url']
-
-    def get_experience_years(self, obj):
-        return f"{obj.experience} лет"
 
     def get_client_count(self, obj):
-        return obj.clients.count()
+        return TrainerClient.objects.filter(trainer=obj).count()
+
+    def get_clients(self, obj):
+        sessions = TrainerClient.objects.filter(trainer=obj)
+        return TrainerClientSerializer(sessions, many=True).data
 
     def get_photo_url(self, obj):
-        if obj.photo:
+        if obj.photo and hasattr(obj.photo, 'url'):
             return obj.photo.url
         return None
+
+    def get_experience_years(self, obj):
+        years = obj.experience
+        if years == 1:
+            return "1 год"
+        elif 2 <= years <= 4:
+            return f"{years} года"
+        else:
+            return f"{years} лет"
 
 
 class UserSerializer(serializers.ModelSerializer):
