@@ -1,22 +1,30 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
-
 trigger:
   branches:
     include:
       - develop
 
 stages:
-  - stage: BuildAndDeploy
+  - stage: BuildAndTestAndDeploy
+    displayName: "Сборка, тесты и деплой"
     jobs:
-      - job: BuildOnMyServer
+      - job: OnLocalServer
+        displayName: "Self-hosted агент"
         pool:
-          name: Default  # Имя твоего self-hosted pool
+          name: Default  
+
         steps:
           - script: |
+              echo "Установка зависимостей для backend"
+              cd gym-app/backend
+              pip install -r requirements.txt
+              echo "Запуск тестов"
+              pytest
+            displayName: "Run backend tests (pytest)"
+
+          - script: |
+              echo "Перезапуск контейнеров"
               cd gym-app
               docker-compose down
               docker-compose up -d --build
-            displayName: "Build and deploy on local server"
+            displayName: "Build & Deploy (docker-compose)"
+

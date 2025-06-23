@@ -9,6 +9,8 @@ inflection==0.5.1
 packaging==25.0
 pillow==11.2.1
 PyJWT==2.9.0
+pytest>=7.0
+pytest-django
 pytz==2025.2
 PyYAML==6.0.2
 sqlparse==0.5.3
