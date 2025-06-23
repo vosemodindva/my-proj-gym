@@ -15,3 +15,17 @@ class IsAdminToken(BasePermission):
     """
     def has_permission(self, request, view):
         return request.user and request.user.is_authenticated and request.user.is_staff
+    
+class IsTrainer(BasePermission):
+    """
+    Доступ разрешён только пользователям, у которых есть trainer_profile
+    """
+    def has_permission(self, request, view):
+        return hasattr(request.user, 'trainer_profile')
+    
+class IsTrainerOwner(BasePermission):
+    """
+    Доступ только если пользователь — владелец этого Trainer-объекта
+    """
+    def has_object_permission(self, request, view, obj):
+        return hasattr(request.user, 'trainer_profile') and obj.user == request.user

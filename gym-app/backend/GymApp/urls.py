@@ -2,7 +2,8 @@ from django.urls import path, re_path
 from .views import (
     RegisterView, MembershipViewSet, ProfileAPIView,
     FrontendAppView, BuyMembershipAPIView, TrainerViewSet,
-    EventViewSet
+    EventViewSet,
+
 )
 from rest_framework.routers import DefaultRouter
 from .serializers import CustomTokenObtainPairSerializer

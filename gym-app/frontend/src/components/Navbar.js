@@ -33,6 +33,14 @@ function Navbar() {
                 <Link className="nav-link" to="/profile">Профиль</Link>
               </li>
 
+              {userInfo?.trainer_profile && (
+                <li className="nav-item">
+                  <Link className="nav-link" to="/trainer/profile">
+                    Профиль тренера
+                  </Link>
+                </li>
+              )}
+
               {/* 👑 Отображение роли */}
               {userInfo?.is_superuser && (
                 <span className="badge bg-warning text-dark ms-2">Admin</span>
