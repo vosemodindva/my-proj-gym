@@ -9,4 +9,6 @@ services:
       - ./backend:/app
     working_dir: /app
     command: ["pytest", "GymApp/tests"]
+    entrypoint: ""
+
 
