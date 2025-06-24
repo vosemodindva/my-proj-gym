@@ -1,0 +1,30 @@
+{% extends 'GymApp/base.html' %}
+{% block title %}Главная — Омежка{% endblock %}
+
+{% block content %}
+<div class="text-center mb-4">
+    <h1>Добро пожаловать в Омежка Gym</h1>
+    <p class="lead">Здесь большой блок с фотографиями тренажеров, сауны, массажа, бар</p>
+</div>
+
+<h3 class="text-center">Выбери абонемент</h3>
+
+<div class="row row-cols-1 row-cols-md-2 g-4 mt-4">
+    {% for plan in memberships %}
+    <div class="col">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">{{ plan.name }}</h5>
+                <p class="card-text">Цена: {{ plan.price }} ₽</p>
+                <p class="card-text">{{ plan.description }}</p>
+                <a href="{% url 'purchase' %}" class="btn btn-primary">Купить</a>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <p>Абонементы пока не добавлены.</p>
+    {% endfor %}
+</div>
+{% endblock %}
+
+

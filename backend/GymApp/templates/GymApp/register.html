@@ -1,0 +1,13 @@
+<h2>Регистрация</h2>
+<form method="post">
+    {% csrf_token %}
+    <p>Имя пользователя: <input type="text" name="username" required></p>
+    <p>Email: <input type="email" name="email" required></p>
+    <p>Пароль: <input type="password" name="password1" required></p>
+    <p>Подтвердите пароль: <input type="password" name="password2" required></p>
+    <button type="submit">Зарегистрироваться</button>
+</form>
+
+{% if error %}
+    <p style="color:red">{{ error }}</p>
+{% endif %}
