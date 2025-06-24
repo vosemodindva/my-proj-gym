@@ -6,6 +6,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework import generics, viewsets, decorators, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework.viewsets import ModelViewSet
 from .serializers import (
     RegisterSerializer,
     MembershipSerializer,
@@ -26,8 +27,20 @@ from .services import (
     get_trainer_clients,
     remove_client_from_trainer,
 )
+from .docs.trainer_docs import get_trainers_docs, create_trainer_docs
 
 
+class TrainerViewSet(ModelViewSet):
+    queryset = Trainer.objects.all()
+    serializer_class = TrainerSerializer
+
+    @get_trainers_docs
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+
+    @create_trainer_docs
+    def create(self, request, *args, **kwargs):
+        return super().create(request, *args, **kwargs)
 
 class FrontendAppView(View):
     def get(self, request):
