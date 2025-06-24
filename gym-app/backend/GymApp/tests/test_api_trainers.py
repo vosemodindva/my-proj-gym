@@ -14,8 +14,11 @@ def test_list_trainers_authenticated_only():
     access = login.data["access"]
     client.credentials(HTTP_AUTHORIZATION=f"Bearer {access}")
 
-    Trainer.objects.create(name="Андрей", bio="силовые", experience=5)
-    Trainer.objects.create(name="Елена", bio="йога", experience=3)
+    trainer1_user = User.objects.create_user(username="andrey", password="123")
+    Trainer.objects.create(user=trainer1_user, name="Андрей", bio="силовые", experience=5)
+
+    trainer2_user = User.objects.create_user(username="elena", password="123")
+    Trainer.objects.create(user=trainer2_user, name="Елена", bio="йога", experience=3)
 
     response = client.get("/api/trainers/")
     assert response.status_code == 200

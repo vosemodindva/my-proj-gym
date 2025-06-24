@@ -60,7 +60,8 @@ def test_user_serializer_with_membership():
 
 @pytest.mark.django_db
 def test_trainer_serializer_output():
-    trainer = Trainer.objects.create(name="Сергей", bio="Сила и выносливость", experience=4)
+    user = User.objects.create_user(username="trainer", password="12345")
+    trainer = Trainer.objects.create(user=user, name="Сергей", bio="Сила и выносливость", experience=4)
     data = TrainerSerializer(trainer).data
 
     assert data["name"] == "Сергей"

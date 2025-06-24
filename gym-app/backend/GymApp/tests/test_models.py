@@ -69,5 +69,7 @@ def test_event_str_and_participant_count():
 
 @pytest.mark.django_db
 def test_trainer_str():
-    t = Trainer.objects.create(name="Алексей", bio="Мастер спорта", experience=5)
+    User = get_user_model()
+    user = User.objects.create_user(username="alexey", password="pass123")
+    t = Trainer.objects.create(user=user, name="Алексей", bio="Мастер спорта", experience=5)
     assert str(t) == "Алексей"
