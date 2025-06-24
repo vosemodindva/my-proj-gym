@@ -4,27 +4,24 @@ trigger:
       - develop
 
 stages:
-  - stage: BuildAndTestAndDeploy
-    displayName: "Сборка, тесты и деплой"
+  - stage: TestAndDeploy
+    displayName: "Тесты и деплой"
     jobs:
-      - job: OnLocalServer
-        displayName: "Self-hosted агент"
+      - job: DockerizedTests
+        displayName: "Запуск pytest в контейнере"
         pool:
-          name: Default  
+          name: Default
 
         steps:
           - script: |
-              echo "Установка зависимостей для backend"
-              cd gym-app/backend
-              python -m pip install -r requirements.txt
-              echo "Запуск тестов"
-              python -m pytest
-            displayName: "Run backend tests (pytest)"
+              echo "Запуск тестов в Docker"
+              cd gym-app
+              docker-compose -f docker-compose.test.yml up --abort-on-container-exit --build
+            displayName: "Run pytest inside container"
 
           - script: |
-              echo "Перезапуск контейнеров"
+              echo "Деплой приложения"
               cd gym-app
               docker-compose down
               docker-compose up -d --build
-            displayName: "Build & Deploy (docker-compose)"
-
+            displayName: "Deploy containers"

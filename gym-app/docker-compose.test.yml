@@ -1,0 +1,12 @@
+version: '3.9'
+
+services:
+  backend-tests:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    volumes:
+      - ./backend:/app
+    working_dir: /app
+    command: ["pytest", "GymApp/tests"]
+
