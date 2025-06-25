@@ -12,3 +12,8 @@ build/
 *.log
 .DS_Store
 .vscode/
+# Tests
+.pytest_cache/
+htmlcov/
+.coverage
+.eslintcache
