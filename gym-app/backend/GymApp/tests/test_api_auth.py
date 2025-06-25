@@ -21,6 +21,7 @@ def test_register_api_returns_tokens():
 
 @pytest.mark.django_db
 def test_login_api_returns_tokens():
+    User.objects.create_user(username="loginuser", password="testpass123")
     client = APIClient()
     data = {
         "username": "loginuser",
@@ -34,6 +35,7 @@ def test_login_api_returns_tokens():
 
 @pytest.mark.django_db
 def test_profile_api_requires_authentication():
+    User.objects.create_user(username="withtoken", password="test123")
     client = APIClient()
     response = client.get("/api/profile/")
     assert response.status_code == 401  # Unauthorized
@@ -41,6 +43,8 @@ def test_profile_api_requires_authentication():
 
 @pytest.mark.django_db
 def test_profile_api_authenticated_access():
+    User.objects.create_user(username="withtoken", password="test123",
+                             email="e@mail.com")
     client = APIClient()
     login = client.post("/api/token/", {"username": "withtoken",
                                         "password": "test123"})

@@ -9,6 +9,7 @@ User = get_user_model()
 @pytest.mark.django_db
 def test_buy_membership_and_profile_update():
     # Создаём пользователя и логинимся
+    User.objects.create_user(username="buyer", password="123pass")
     membership = Membership.objects.create(name="VIP", duration_days=90,
                                            price=2500)
 
@@ -40,6 +41,7 @@ def test_buy_membership_requires_authentication():
 
 @pytest.mark.django_db
 def test_buy_nonexistent_membership_returns_404():
+    User.objects.create_user(username="ghost", password="12345")
     client = APIClient()
     token = client.post("/api/token/", {"username": "ghost",
                                         "password": "12345"}).data["access"]
