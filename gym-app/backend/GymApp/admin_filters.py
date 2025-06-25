@@ -1,5 +1,6 @@
 from django.contrib.admin import SimpleListFilter
 
+
 class IsTrainerFilter(SimpleListFilter):
     title = "Тренер"
     parameter_name = "is_trainer"

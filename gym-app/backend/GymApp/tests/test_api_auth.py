@@ -4,6 +4,7 @@ from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
+
 @pytest.mark.django_db
 def test_register_api_returns_tokens():
     client = APIClient()
@@ -17,9 +18,9 @@ def test_register_api_returns_tokens():
     assert "access" in response.data
     assert "refresh" in response.data
 
+
 @pytest.mark.django_db
 def test_login_api_returns_tokens():
-    user = User.objects.create_user(username="loginuser", password="testpass123")
     client = APIClient()
     data = {
         "username": "loginuser",
@@ -30,20 +31,21 @@ def test_login_api_returns_tokens():
     assert "access" in response.data
     assert "refresh" in response.data
 
+
 @pytest.mark.django_db
 def test_profile_api_requires_authentication():
     client = APIClient()
     response = client.get("/api/profile/")
     assert response.status_code == 401  # Unauthorized
 
+
 @pytest.mark.django_db
 def test_profile_api_authenticated_access():
-    user = User.objects.create_user(username="withtoken", password="test123", email="e@mail.com")
     client = APIClient()
-    login = client.post("/api/token/", {"username": "withtoken", "password": "test123"})
+    login = client.post("/api/token/", {"username": "withtoken",
+                                        "password": "test123"})
     access_token = login.data["access"]
     client.credentials(HTTP_AUTHORIZATION=f"Bearer {access_token}")
-    
     response = client.get("/api/profile/")
     assert response.status_code == 200
     assert response.data["username"] == "withtoken"

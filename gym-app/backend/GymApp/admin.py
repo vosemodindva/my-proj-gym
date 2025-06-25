@@ -25,6 +25,7 @@ class MembershipAdmin(admin.ModelAdmin):
         )
         super().delete_model(request, obj)
 
+
 @admin.register(UserMembership)
 class UserMembershipAdmin(admin.ModelAdmin):
     list_display = ('user', 'membership', 'valid_until')
@@ -83,10 +84,11 @@ class AuditLogAdmin(admin.ModelAdmin):
 
     def has_delete_permission(self, request, obj=None):
         return False
-    
+
 
 class CustomUserAdmin(admin.ModelAdmin):
-    list_display = ('username', 'email', 'is_staff', 'is_superuser', 'is_trainer')
+    list_display = ('username', 'email', 'is_staff', 'is_superuser',
+                    'is_trainer')
     actions = [make_trainers, remove_trainers]
     list_filter = ('is_staff', 'is_superuser', IsTrainerFilter)
 
