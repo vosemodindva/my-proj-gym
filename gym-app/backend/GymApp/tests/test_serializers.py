@@ -70,6 +70,7 @@ def test_trainer_serializer_output():
     user = User.objects.create_user(username="trainer", password="12345")
     trainer = Trainer.objects.create(user=user, name="Сергей",
                                      bio="Сила и выносливость", experience=4)
+
     data = TrainerSerializer(trainer).data
 
     assert data["name"] == "Сергей"
