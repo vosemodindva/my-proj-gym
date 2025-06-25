@@ -11,7 +11,7 @@ stages:
       - job: BuildJob
         displayName: "Проверка зависимостей и линтеры"
         pool:
-          name: Default
+          name: ubuntu-latest
         steps:
           - script: |
               echo "Python Lint (flake8)"
