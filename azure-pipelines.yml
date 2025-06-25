@@ -14,8 +14,9 @@ stages:
           name: Default
         steps:
           - script: |
+              cd gym-app/backend
               python -m pip install flake8
-              python -m flake8 gym-app/backend
+              python -m flake8 .
             displayName: "Run flake8"
 
           - script: |

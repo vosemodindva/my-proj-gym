@@ -15,5 +15,4 @@ class TrainerClient(models.Model):
         unique_together = ('trainer', 'client')
 
     def __str__(self):
-        return f"{self.client} записан к {self.trainer} на {
-            self.appointment_time}"
+        return f"{self.client} записан к {self.trainer} на {self.appointment_time}"
