@@ -16,13 +16,13 @@ stages:
           - script: |
               echo "Python Lint (flake8)"
               cd gym-app/backend
-              docker run --rm -v $(pwd):/app -w /app python:3.10 bash -c "pip install flake8 && flake8 ."
+              docker run --rm -v "$(Build.SourcesDirectory)/gym-app/backend":/app -w /app python:3.10 bash -c "pip install flake8 && flake8 ."
             displayName: "Run flake8"
 
           - script: |
               echo "JS Lint (eslint)"
               cd gym-app/frontend
-              docker run --rm -v $(pwd):/app -w /app node:20 bash -c "npm ci && npx eslint ."
+              docker run --rm -v "$(Build.SourcesDirectory)/gym-app/frontend":/app -w /app node:20 bash -c "npm ci && npx eslint ."
             displayName: "Run ESLint"
 
   - stage: Test
