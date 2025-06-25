@@ -2,26 +2,81 @@ trigger:
   branches:
     include:
       - develop
+      - main
 
 stages:
-  - stage: TestAndDeploy
-    displayName: "Тесты и деплой"
+  - stage: Build
+    displayName: "Сборка и линтинг"
     jobs:
-      - job: DockerizedTests
-        displayName: "Запуск pytest в контейнере"
+      - job: BuildJob
+        displayName: "Проверка зависимостей и линтеры"
         pool:
           name: Default
-
         steps:
           - script: |
-              echo "Запуск тестов в Docker"
+              echo "Python Lint (flake8)"
+              cd gym-app/backend
+              docker run --rm -v "$(Build.SourcesDirectory)/gym-app/backend":/app -w /app python:3.10 bash -c "pip install flake8 && flake8 ."
+            displayName: "Run flake8"
+
+          - script: |
+              echo "JS Lint (eslint)"
+              cd gym-app/frontend
+              docker run --rm -v "$(Build.SourcesDirectory)/gym-app/frontend":/app -w /app node:20 bash -c "npm ci && npx eslint ."
+            displayName: "Run ESLint"
+
+  - stage: Test
+    displayName: "Тестирование"
+    dependsOn: Build
+    condition: succeeded()
+    jobs:
+      - job: TestJob
+        displayName: "Pytest в контейнере"
+        pool:
+          name: Default
+        steps:
+          - script: |
+              echo "Тесты в docker-compose"
               cd gym-app
               docker-compose -f docker-compose.test.yml up --abort-on-container-exit --build
             displayName: "Run pytest inside container"
 
           - script: |
-              echo "Деплой приложения"
+              echo "Остановка тестовых контейнеров"
+              cd gym-app
+              docker-compose -f docker-compose.test.yml down
+            displayName: "Stop test containers"
+
+  - stage: DeployStaging
+    displayName: "Деплой в staging (develop)"
+    dependsOn: Test
+    condition: and(succeeded(), eq(variables['Build.SourceBranchName'], 'develop'))
+    jobs:
+      - job: DeployStagingJob
+        displayName: "Deploy develop"
+        pool:
+          name: Default
+        steps:
+          - script: |
+              echo "Staging deploy (develop)"
               cd gym-app
               docker-compose down
               docker-compose up -d --build
-            displayName: "Deploy containers"
+            displayName: "Deploy develop containers"
+
+  - stage: DeployProduction
+    displayName: "Деплой в production (main)"
+    dependsOn: Test
+    condition: and(succeeded(), eq(variables['Build.SourceBranchName'], 'main'))
+    jobs:
+      - job: DeployProductionJob
+        displayName: "Deploy production"
+        pool:
+          name: Default
+        steps:
+          - script: |
+              echo "Manual deploy to production"
+              cd gym-app
+              docker-compose down
+              docker-compose up -d --build
+            displayName: "Deploy production containers"
