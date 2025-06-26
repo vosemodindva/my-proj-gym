@@ -13,5 +13,7 @@ services:
     command: >
       sh -c "pip install -r requirements.txt &&
              pytest GymApp/tests --cov=GymApp --cov-report=xml"
+    environment:
+      - SECRET_KEY=${SECRET_KEY}
 
 

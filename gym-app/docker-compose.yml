@@ -14,9 +14,7 @@ services:
     image: postgres:15
     restart: always
     environment:
-      POSTGRES_DB: omejka_db
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
+      - SECRET_KEY=${SECRET_KEY}
     volumes:
       - pgdata:/var/lib/postgresql/data
 
