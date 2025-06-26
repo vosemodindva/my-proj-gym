@@ -168,11 +168,11 @@ SWAGGER_USE_COMPAT_RENDERERS = False
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 TEMPLATES[0]['DIRS'] = [
-    BASE_DIR.parent.parent / 'frontend' / 'build',
+    BASE_DIR.parent / 'frontend' / 'build',
 ]
 
 STATICFILES_DIRS = [
-    BASE_DIR.parent.parent / 'frontend' / 'build' / 'static',
+    BASE_DIR.parent / 'frontend' / 'build' / 'static',
 ]
 
 STATIC_URL = '/static/'
