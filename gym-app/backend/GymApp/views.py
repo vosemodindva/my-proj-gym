@@ -3,10 +3,9 @@ from django.shortcuts import render
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
-from rest_framework import generics, viewsets, decorators, status
+from rest_framework import generics, viewsets, decorators
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework.viewsets import ModelViewSet
 from .serializers import (
     RegisterSerializer,
     MembershipSerializer,
@@ -16,12 +15,13 @@ from .serializers import (
     AuditLogSerializer,
     TrainerProfileSerializer,
 )
-from .permissions import IsAdminOrReadOnly, IsAdminToken, IsTrainer, IsTrainerOwner
+from .permissions import (IsAdminOrReadOnly, IsAdminToken, IsTrainer,
+                          IsTrainerOwner)
 from .models import Membership, Trainer, Event, AuditLog
 from django.contrib.auth.models import User
 from .services import (
-    buy_membership_for_user, 
-    assign_trainer_to_user, 
+    buy_membership_for_user,
+    assign_trainer_to_user,
     unassign_trainer_from_user,
     get_user_trainers,
     get_trainer_clients,
@@ -29,18 +29,6 @@ from .services import (
 )
 from .docs.trainer_docs import get_trainers_docs, create_trainer_docs
 
-
-class TrainerViewSet(ModelViewSet):
-    queryset = Trainer.objects.all()
-    serializer_class = TrainerSerializer
-
-    @get_trainers_docs
-    def list(self, request, *args, **kwargs):
-        return super().list(request, *args, **kwargs)
-
-    @create_trainer_docs
-    def create(self, request, *args, **kwargs):
-        return super().create(request, *args, **kwargs)
 
 class FrontendAppView(View):
     def get(self, request):
@@ -81,7 +69,7 @@ class BuyMembershipAPIView(APIView):
         print(request.user)
         result = buy_membership_for_user(request.user, membership_id)
         return Response(result['data'], status=result['status'])
-    
+
 
 class AuditLogViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = AuditLog.objects.all().order_by('-timestamp')
@@ -98,46 +86,65 @@ class TrainerViewSet(viewsets.ModelViewSet):
             return [IsAuthenticated(), IsTrainerOwner()]
         return [IsAuthenticated()]
 
-    @action(detail=True, methods=["post"], permission_classes=[IsAuthenticated])
+    @action(detail=True, methods=["post"], permission_classes=[IsAuthenticated]
+            )
     def assign(self, request, pk=None):
         appointment_time = request.data.get("appointment_time")
-        return assign_trainer_to_user(user=request.user, trainer_id=pk, appointment_time_str=appointment_time)
+        return assign_trainer_to_user(user=request.user, trainer_id=pk,
+                                      appointment_time_str=appointment_time)
 
-    @action(detail=True, methods=["post"], permission_classes=[IsAuthenticated])
+    @action(detail=True, methods=["post"], permission_classes=[IsAuthenticated]
+            )
     def unassign(self, request, pk=None):
         return unassign_trainer_from_user(trainer_id=pk, user=request.user)
 
-    @decorators.action(detail=False, methods=["get"], permission_classes=[IsAuthenticated])
+    @decorators.action(detail=False, methods=["get"],
+                       permission_classes=[IsAuthenticated])
     def my(self, request):
         trainers = get_user_trainers(request.user)
         data = TrainerSerializer(trainers, many=True).data
         return Response(data)
 
-    @decorators.action(detail=False, methods=["get"], permission_classes=[IsAuthenticated, IsTrainer])
+    @decorators.action(detail=False, methods=["get"],
+                       permission_classes=[IsAuthenticated, IsTrainer])
     def my_clients(self, request):
         clients = get_trainer_clients(request.user)
-        data = [{'id': u.id, 'username': u.username, 'email': u.email} for u in clients]
+        data = [{'id': u.id,
+                 'username': u.username, 'email': u.email} for u in clients]
         return Response(data)
-    
-    @action(detail=False, methods=["get", "put"], url_path="me", permission_classes=[IsAuthenticated, IsTrainer])
+
+    @action(detail=False, methods=["get", "put"], url_path="me",
+            permission_classes=[IsAuthenticated, IsTrainer])
     def my_profile(self, request):
         if not hasattr(request.user, "trainer_profile"):
-            return Response({"detail": "Вы не являетесь тренером."}, status=403)
-        
+            return Response({"detail": "Вы не являетесь тренером."},
+                            status=403)
+
         trainer = request.user.trainer_profile
 
         if request.method == "GET":
             serializer = TrainerProfileSerializer(trainer)
             return Response(serializer.data)
 
-        serializer = TrainerProfileSerializer(trainer, data=request.data, partial=True)
+        serializer = TrainerProfileSerializer(trainer, data=request.data,
+                                              partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=400)
-    
-    @action(detail=False, methods=["post"], url_path="remove_client", permission_classes=[IsTrainer])
+
+    @action(detail=False, methods=["post"], url_path="remove_client",
+            permission_classes=[IsTrainer])
     def remove_client(self, request):
         client_id = request.data.get("client_id")
-        remove_client_from_trainer(trainer_user=request.user, client_id=client_id)
+        remove_client_from_trainer(trainer_user=request.user,
+                                   client_id=client_id)
         return Response({"detail": "Клиент удален"}, status=200)
+
+    @get_trainers_docs
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+
+    @create_trainer_docs
+    def create(self, request, *args, **kwargs):
+        return super().create(request, *args, **kwargs)

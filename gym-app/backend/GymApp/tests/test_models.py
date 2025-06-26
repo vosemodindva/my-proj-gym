@@ -5,9 +5,10 @@ from GymApp.models import Membership, UserMembership, Event, Trainer
 
 User = get_user_model()
 
+
 @pytest.mark.django_db
 def test_create_membership():
-    user = User.objects.create_user(username="testuser", password="12345678")
+    # user = User.objects.create_user(username="testuser", password="12345678")
     membership = Membership.objects.create(
         name="Безлимит",
         duration_days=30,
@@ -18,6 +19,7 @@ def test_create_membership():
 
 
 User = get_user_model()
+
 
 @pytest.mark.django_db
 def test_user_membership_creation_and_methods():
@@ -45,7 +47,7 @@ def test_user_membership_creation_and_methods():
 
     # Тест days_remaining
     remaining_days = user_membership.days_remaining()
-    assert remaining_days == 10 or remaining_days == 9  # возможна погрешность в секундах
+    assert remaining_days == 10 or remaining_days == 9
 
     # Тест просроченного абонемента
     expired = UserMembership.objects.create(
@@ -57,6 +59,7 @@ def test_user_membership_creation_and_methods():
     assert expired.is_active() is False
     assert expired.days_remaining() == 0
 
+
 @pytest.mark.django_db
 def test_event_str_and_participant_count():
     user = User.objects.create_user(username="eventuser", password="123")
@@ -67,7 +70,12 @@ def test_event_str_and_participant_count():
     assert str(event) == "Йога"
     assert event.participant_count() == 1
 
+
 @pytest.mark.django_db
 def test_trainer_str():
-    t = Trainer.objects.create(name="Алексей", bio="Мастер спорта", experience=5)
+    User = get_user_model()
+    user = User.objects.create_user(username="alexey", password="pass123")
+
+    t = Trainer.objects.create(user=user, name="Алексей", bio="Мастер спорта",
+                               experience=5)
     assert str(t) == "Алексей"

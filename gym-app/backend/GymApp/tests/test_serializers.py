@@ -12,6 +12,7 @@ from django.utils.timezone import now, timedelta
 
 User = get_user_model()
 
+
 @pytest.mark.django_db
 def test_register_serializer_creates_user():
     data = {
@@ -31,9 +32,11 @@ def test_register_serializer_creates_user():
     assert "access" in response_data
     assert "refresh" in response_data
 
+
 @pytest.mark.django_db
 def test_membership_serializer_output():
-    membership = Membership.objects.create(name="Фитнес", duration_days=30, price=999.99)
+    membership = Membership.objects.create(name="Фитнес", duration_days=30,
+                                           price=999.99)
     serializer = MembershipSerializer(membership)
     data = serializer.data
 
@@ -41,10 +44,13 @@ def test_membership_serializer_output():
     assert data["duration_days"] == 30
     assert data["price"] == "999.99"
 
+
 @pytest.mark.django_db
 def test_user_serializer_with_membership():
-    user = User.objects.create_user(username="has_plan", email="user@mail.com", password="12345")
-    membership = Membership.objects.create(name="Премиум", duration_days=60, price=1999.00)
+    user = User.objects.create_user(username="has_plan", email="user@mail.com",
+                                    password="12345")
+    membership = Membership.objects.create(name="Премиум", duration_days=60,
+                                           price=1999.00)
     UserMembership.objects.create(
         user=user,
         membership=membership,
@@ -58,19 +64,25 @@ def test_user_serializer_with_membership():
     assert data["membership"]["name"] == "Премиум"
     assert data["membership"]["duration_days"] == 60
 
+
 @pytest.mark.django_db
 def test_trainer_serializer_output():
-    trainer = Trainer.objects.create(name="Сергей", bio="Сила и выносливость", experience=4)
+    user = User.objects.create_user(username="trainer", password="12345")
+    trainer = Trainer.objects.create(user=user, name="Сергей",
+                                     bio="Сила и выносливость", experience=4)
+
     data = TrainerSerializer(trainer).data
 
     assert data["name"] == "Сергей"
     assert data["experience"] == 4
     assert "bio" in data
 
+
 @pytest.mark.django_db
 def test_event_serializer_output():
     event = Event.objects.create(
-        title="Функционалка", description="Тренировка всего тела", date=now().date(), age_limit=16
+        title="Функционалка", description="Тренировка всего тела",
+        date=now().date(), age_limit=16
     )
     data = EventSerializer(event).data
 

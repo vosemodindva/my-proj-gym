@@ -5,6 +5,7 @@ from GymApp.models import Membership
 
 User = get_user_model()
 
+
 @pytest.mark.django_db
 def test_list_memberships():
     Membership.objects.create(name="Базовый", duration_days=30, price=500)

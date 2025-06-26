@@ -2,20 +2,20 @@ from rest_framework import serializers
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from .models import User, Membership, Trainer, Event, AuditLog, TrainerClient
-from django.contrib.auth import get_user_model
 from .services import register_user
 
-User = get_user_model()
 
 class TrainerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Trainer
         fields = '__all__'
 
+
 class EventSerializer(serializers.ModelSerializer):
     class Meta:
         model = Event
         fields = '__all__'
+
 
 class RegisterSerializer(serializers.ModelSerializer):
     class Meta:
@@ -29,7 +29,7 @@ class RegisterSerializer(serializers.ModelSerializer):
             email=validated_data.get('email'),
             password=validated_data['password']
         )
-        
+
     def to_representation(self, instance):
         refresh = RefreshToken.for_user(instance)
         return {
@@ -38,7 +38,8 @@ class RegisterSerializer(serializers.ModelSerializer):
             'access': str(refresh.access_token),
             'refresh': str(refresh),
         }
-    
+
+
 class MembershipSerializer(serializers.ModelSerializer):
     """
     Сериализатор абонементов:
@@ -49,6 +50,7 @@ class MembershipSerializer(serializers.ModelSerializer):
     class Meta:
         model = Membership
         fields = '__all__'
+
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
@@ -64,7 +66,7 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         data = super().validate(attrs)
         data['role'] = 'admin' if self.user.is_staff else 'user'
         return data
-    
+
 
 class ClientShortSerializer(serializers.ModelSerializer):
     class Meta:
@@ -76,6 +78,7 @@ class SimpleUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'username', 'email']
+
 
 class TrainerClientSerializer(serializers.ModelSerializer):
     client = SimpleUserSerializer()
@@ -126,7 +129,8 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'is_staff', 'is_superuser', 'membership',  "trainer_profile"]
+        fields = ['username', 'email', 'is_staff', 'is_superuser',
+                  'membership', "trainer_profile"]
 
     def get_membership(self, user):
         user_membership = getattr(user, 'usermembership', None)
@@ -136,7 +140,7 @@ class UserSerializer(serializers.ModelSerializer):
                 "duration_days": user_membership.membership.duration_days
             }
         return None
-    
+
 
 class AuditLogSerializer(serializers.ModelSerializer):
     class Meta:

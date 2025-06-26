@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils.timezone import now
 
+
 class Membership(models.Model):
     name = models.CharField(max_length=100)
     price = models.DecimalField(max_digits=8, decimal_places=2)
@@ -11,9 +12,11 @@ class Membership(models.Model):
     def __str__(self):
         return self.name
 
+
 class UserMembership(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    membership = models.ForeignKey(Membership, on_delete=models.SET_NULL, null=True)
+    membership = models.ForeignKey(Membership, on_delete=models.SET_NULL,
+                                   null=True)
     purchase_date = models.DateTimeField(default=now)
     valid_until = models.DateTimeField()
 
