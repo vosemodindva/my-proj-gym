@@ -107,98 +107,178 @@ const TrainerProfile = () => {
       });
   };
 
-  if (!profile) return <p>Загрузка профиля...</p>;
+  if (!profile) return <p style={{ color: "#fff", textAlign: "center" }}>Загрузка профиля...</p>;
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h2>Профиль тренера</h2>
+    <div
+      style={{
+        backgroundImage: `url("/media/images/glav.jpg")`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundAttachment: "fixed",
+        minHeight: "100vh",
+        fontFamily: '"Montserrat", sans-serif',
+        color: "#fff",
+        padding: "40px",
+        overflow: "hidden",
+      }}
+    >
+      <div
+        style={{
+          background: "rgba(255, 255, 255, 0.1)",
+          backdropFilter: "blur(10px)",
+          borderRadius: "20px",
+          padding: "30px",
+          maxWidth: "800px",
+          margin: "auto",
+          animation: "fadeIn 1.5s ease-out",
+          border: "1px solid rgba(255, 255, 255, 0.18)",
+        }}
+      >
+        <h2
+          style={{
+            textAlign: "center",
+            color: "#ffeb3b",
+            textShadow: "2px 2px 5px rgba(0, 0, 0, 0.8)",
+            marginBottom: "25px",
+          }}
+        >
+          Профиль тренера
+        </h2>
 
-      {profile.photo_url && (
-        <div>
-          <img
-            src={profile.photo_url}
-            alt="Фото тренера"
-            width={200}
-            style={{ borderRadius: "8px" }}
+        {profile.photo_url && (
+          <div style={{ textAlign: "center" }}>
+            <img
+              src={profile.photo_url}
+              alt="Фото тренера"
+              width={200}
+              style={{ borderRadius: "10px", marginBottom: "10px" }}
+            />
+            <br />
+            <button
+              style={{
+                marginTop: "10px",
+                backgroundColor: "#ff5252",
+                color: "#fff",
+                padding: "6px 12px",
+                border: "none",
+                borderRadius: "5px",
+                cursor: "pointer",
+              }}
+              onClick={handleDeletePhoto}
+            >
+              Удалить фото
+            </button>
+          </div>
+        )}
+
+        <p><strong>Имя:</strong> {profile.name}</p>
+        <p><strong>Стаж:</strong> {profile.experience_years} лет</p>
+        <p><strong>Описание:</strong> {profile.description}</p>
+        <p><strong>Клиентов:</strong> {profile.client_count}</p>
+
+        <h3 style={{ marginTop: "20px" }}>Клиенты</h3>
+        {Array.isArray(profile.clients) && profile.clients.length > 0 ? (
+          <table style={{
+            width: "100%",
+            backgroundColor: "#222",
+            borderCollapse: "collapse",
+            marginTop: "10px",
+            color: "#fff",
+          }}>
+            <thead style={{ backgroundColor: "#333" }}>
+              <tr>
+                <th>Имя</th>
+                <th>Email</th>
+                <th>Время</th>
+                <th>Действие</th>
+              </tr>
+            </thead>
+            <tbody>
+              {profile.clients.map((c, index) => (
+                <tr key={index}>
+                  <td>{c.client.username}</td>
+                  <td>{c.client.email}</td>
+                  <td>{new Date(c.appointment_time).toLocaleString()}</td>
+                  <td>
+                    <button
+                      style={{
+                        backgroundColor: "#e53935",
+                        color: "#fff",
+                        padding: "4px 8px",
+                        border: "none",
+                        borderRadius: "4px",
+                        cursor: "pointer",
+                      }}
+                      onClick={() => handleRemoveClient(c.client.id)}
+                    >
+                      Удалить
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        ) : (
+          <p>Нет клиентов</p>
+        )}
+
+        <h3 style={{ marginTop: "30px" }}>Редактировать профиль</h3>
+        <form onSubmit={handleSubmit}>
+          <input
+            name="name"
+            value={formData.name}
+            onChange={handleChange}
+            placeholder="Имя"
+            style={{ width: "100%", padding: "8px", marginBottom: "10px", borderRadius: "5px" }}
+          />
+          <input
+            name="experience"
+            value={formData.experience}
+            onChange={handleChange}
+            placeholder="Стаж (в годах)"
+            type="number"
+            style={{ width: "100%", padding: "8px", marginBottom: "10px", borderRadius: "5px" }}
+          />
+          <textarea
+            name="description"
+            value={formData.description}
+            onChange={handleChange}
+            placeholder="Описание"
+            rows={4}
+            style={{ width: "100%", padding: "8px", marginBottom: "10px", borderRadius: "5px" }}
+          />
+          <input
+            type="file"
+            name="photo"
+            accept="image/*"
+            onChange={handleChange}
+            style={{ marginBottom: "10px" }}
           />
           <br />
           <button
-            style={{ marginTop: "10px", backgroundColor: "tomato", color: "white" }}
-            onClick={handleDeletePhoto}
+            type="submit"
+            style={{
+              backgroundColor: "#4caf50",
+              color: "#fff",
+              padding: "10px 20px",
+              border: "none",
+              borderRadius: "5px",
+              cursor: "pointer",
+              fontSize: "16px"
+            }}
           >
-            Удалить фото
+            Сохранить
           </button>
-        </div>
-      )}
+        </form>
+      </div>
 
-      <p><strong>Имя:</strong> {profile.name}</p>
-      <p><strong>Стаж:</strong> {profile.experience_years}</p>
-      <p><strong>Описание:</strong> {profile.description}</p>
-      <p><strong>Клиентов:</strong> {profile.client_count}</p>
-
-      <h3>Клиенты</h3>
-      {Array.isArray(profile.clients) && profile.clients.length > 0 ? (
-        <table border="1" cellPadding="8" style={{ borderCollapse: "collapse" }}>
-          <thead>
-            <tr>
-              <th>Имя</th>
-              <th>Email</th>
-              <th>Время</th>
-              <th>Действие</th>
-            </tr>
-          </thead>
-          <tbody>
-            {profile.clients.map((c, index) => (
-              <tr key={index}>
-                <td>{c.client.username}</td>
-                <td>{c.client.email}</td>
-                <td>{new Date(c.appointment_time).toLocaleString()}</td>
-                <td>
-                  <button
-                    className="btn btn-danger btn-sm"
-                    onClick={() => handleRemoveClient(c.client.id)}
-                  >
-                    Удалить
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      ) : (
-        <p>Нет клиентов</p>
-      )}
-
-      <h3>Редактировать профиль</h3>
-      <form onSubmit={handleSubmit} style={{ marginTop: "10px" }}>
-        <input
-          name="name"
-          value={formData.name}
-          onChange={handleChange}
-          placeholder="Имя"
-        />
-        <br />
-        <input
-          name="experience"
-          value={formData.experience}
-          onChange={handleChange}
-          placeholder="Стаж (в годах)"
-          type="number"
-        />
-        <br />
-        <textarea
-          name="description"
-          value={formData.description}
-          onChange={handleChange}
-          placeholder="Описание"
-          rows={4}
-          cols={40}
-        />
-        <br />
-        <input type="file" name="photo" accept="image/*" onChange={handleChange} />
-        <br />
-        <button type="submit" style={{ marginTop: "10px" }}>Сохранить</button>
-      </form>
+      <style>{`
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(20px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+      `}</style>
     </div>
   );
 };
