@@ -13,59 +13,74 @@ function Navbar() {
 
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark px-3">
-      <Link className="navbar-brand" to="/">🏋️‍♂️ Омежка</Link>
-      <div className="collapse navbar-collapse">
-        <ul className="navbar-nav me-auto">
-          <li className="nav-item">
-            <Link className="nav-link" to="/memberships">Абонементы</Link>
-          </li>
-          <li className="nav-item">
-            <Link className="nav-link" to="/trainers">Тренеры</Link>
-          </li>
-          <li className="nav-item">
-            <Link className="nav-link" to="/events">Мероприятия</Link>
-          </li>
-        </ul>
-        <ul className="navbar-nav ms-auto">
-          {isAuthenticated ? (
-            <>
-              <li className="nav-item">
-                <Link className="nav-link" to="/profile">Профиль</Link>
-              </li>
+      <div className="container-fluid">
+        <Link className="navbar-brand" to="/">🏋️‍♂️ Омежка</Link>
 
-              {userInfo?.trainer_profile && (
+        {/* 🔽 Кнопка-гамбургер */}
+        <button
+          className="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span className="navbar-toggler-icon" />
+        </button>
+
+        {/* 🔽 Раскрывающееся меню */}
+        <div className="collapse navbar-collapse" id="navbarNav">
+          <ul className="navbar-nav me-auto">
+            <li className="nav-item">
+              <Link className="nav-link" to="/memberships">Абонементы</Link>
+            </li>
+            <li className="nav-item">
+              <Link className="nav-link" to="/trainers">Тренеры</Link>
+            </li>
+            <li className="nav-item">
+              <Link className="nav-link" to="/events">Мероприятия</Link>
+            </li>
+          </ul>
+
+          <ul className="navbar-nav ms-auto">
+            {isAuthenticated ? (
+              <>
                 <li className="nav-item">
-                  <Link className="nav-link" to="/trainer/profile">
-                    Профиль тренера
-                  </Link>
+                  <Link className="nav-link" to="/profile">Профиль</Link>
                 </li>
-              )}
 
-              {/* 👑 Отображение роли */}
-              {userInfo?.is_superuser && (
-                <span className="badge bg-warning text-dark ms-2">Admin</span>
-              )}
-              {userInfo?.is_staff && !userInfo?.is_superuser && (
-                <span className="badge bg-info text-dark ms-2">Сотрудник</span>
-              )}
+                {userInfo?.trainer_profile && (
+                  <li className="nav-item">
+                    <Link className="nav-link" to="/trainer/profile">Профиль тренера</Link>
+                  </li>
+                )}
 
-              <li className="nav-item">
-                <button className="btn btn-outline-light ms-3" onClick={handleLogout}>
-                  Выйти
-                </button>
-              </li>
-            </>
-          ) : (
-            <>
-              <li className="nav-item">
-                <Link className="nav-link" to="/login">Вход</Link>
-              </li>
-              <li className="nav-item">
-                <Link className="nav-link" to="/register">Регистрация</Link>
-              </li>
-            </>
-          )}
-        </ul>
+                {userInfo?.is_superuser && (
+                  <span className="badge bg-warning text-dark ms-2">Admin</span>
+                )}
+                {userInfo?.is_staff && !userInfo?.is_superuser && (
+                  <span className="badge bg-info text-dark ms-2">Сотрудник</span>
+                )}
+
+                <li className="nav-item">
+                  <button className="btn btn-outline-light ms-3" onClick={handleLogout}>
+                    Выйти
+                  </button>
+                </li>
+              </>
+            ) : (
+              <>
+                <li className="nav-item">
+                  <Link className="nav-link" to="/login">Вход</Link>
+                </li>
+                <li className="nav-item">
+                  <Link className="nav-link" to="/register">Регистрация</Link>
+                </li>
+              </>
+            )}
+          </ul>
+        </div>
       </div>
     </nav>
   );
