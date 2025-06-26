@@ -1,6 +1,6 @@
 import axios from "../api/axios";
 import { jwtDecode } from "jwt-decode";
-import React, { useEffect, useState, createContext, useContext } from "react";
+import { useEffect, useState, createContext, useContext } from "react";
 
 const AuthContext = createContext();
 
@@ -55,6 +55,7 @@ export function AuthProvider({ children }) {
     setAccess(res.data.access);
     await refreshUser(); // обновим userInfo тоже
   } catch (err) {
+    console.error("Произошла ошибка:", err);
     console.warn("❌ Ошибка обновления токена, выходим");
     logout(); // если refresh невалиден
   }
