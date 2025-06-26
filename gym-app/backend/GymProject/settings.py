@@ -179,6 +179,9 @@ STATICFILES_DIRS = [
 
 STATIC_URL = '/static/'
 
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+
 CORS_ALLOW_ALL_ORIGINS = True  # ← временно для отладки
 CORS_ALLOW_CREDENTIALS = True
 
