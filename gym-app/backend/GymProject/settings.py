@@ -172,7 +172,7 @@ TEMPLATES[0]['DIRS'] = [
 ]
 
 STATICFILES_DIRS = [
-    BASE_DIR.parent / 'frontend' / 'build' / 'static',
+    BASE_DIR.parent.parent / 'frontend' / 'build' / 'static',
 ]
 
 STATIC_URL = '/static/'
