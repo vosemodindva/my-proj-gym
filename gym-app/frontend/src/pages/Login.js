@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "../api/axios";
 import { useAuth } from "../context/AuthContext";
@@ -21,6 +21,7 @@ function Login() {
       login(res.data.access, res.data.refresh);
       navigate("/profile");
     } catch (err) {
+      console.error("Произошла ошибка:", err);
       setError("Неверное имя пользователя или пароль");
     }
   };

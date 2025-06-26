@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+/* eslint-disable no-unused-vars */
 import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
 import Profile from "./pages/Profile";
@@ -10,6 +10,7 @@ import Events from "./pages/Events";
 import { AuthProvider } from "./context/AuthContext";
 import PrivateRoute from "./components/PrivateRoute";
 import TrainerProfile from "./components/TrainerProfile";
+/* eslint-enable no-unused-vars */
 
 function App() {
   return (
@@ -23,7 +24,6 @@ function App() {
                 <Route path="/trainers" element={<Trainers />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
-                <Route path="/memberships" element={<Memberships />} />
                 <Route path="/events" element={<Events />} />
                 <Route path="/trainer/profile" element={<TrainerProfile />} />
 

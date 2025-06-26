@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "../api/axios";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
@@ -26,6 +26,7 @@ function Memberships() {
       navigate("/profile");
     } catch (err) {
       alert("Ошибка покупки. Возможно, вы уже приобрели абонемент.");
+      console.error("Произошла ошибка:", err);
     }
   };
 

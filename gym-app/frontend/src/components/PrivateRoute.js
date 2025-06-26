@@ -1,4 +1,4 @@
-import React from "react";
+// eslint-disable-next-line no-unused-vars
 import { Navigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
