@@ -12,6 +12,6 @@ services:
     entrypoint: ""
     command: >
       sh -c "pip install -r requirements.txt &&
-             pytest GymApp/tests --cov=GymApp --cov-report=term-missing"
+             pytest GymApp/tests --cov=GymApp --cov-report=xml"
 
 
