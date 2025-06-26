@@ -1,4 +1,6 @@
+import { useNavigate } from 'react-router-dom'
 export default function Home() {
+  const navigate = useNavigate();
   return (
     <div style={{
       backgroundImage: `url('/images/glav.jpg')`,
@@ -83,6 +85,24 @@ export default function Home() {
             color: '#e0e0e0', 
             fontFamily: '"Montserrat", sans-serif' 
           }}>Подберите себе тренера, на ваше предпочтение.</p>
+            <button
+              onClick={() => navigate('/trainers')}
+              style={{
+                marginTop: '15px',
+                padding: '10px 20px',
+                backgroundColor: '#ffeb3b',
+                border: 'none',
+                borderRadius: '10px',
+                color: '#000',
+                fontWeight: '600',
+                cursor: 'pointer',
+                transition: 'background 0.3s ease'
+              }}
+              onMouseOver={(e) => e.target.style.backgroundColor = '#fff176'}
+              onMouseOut={(e) => e.target.style.backgroundColor = '#ffeb3b'}
+            >
+              Выбрать тренера
+            </button>
         </div>
         <div style={{
           background: 'rgba(255, 255, 255, 0.1)',
@@ -109,7 +129,25 @@ export default function Home() {
             lineHeight: '1.6', 
             color: '#e0e0e0', 
             fontFamily: '"Montserrat", sans-serif' 
-          }}>Проверьте расписание групповых занятиййй.</p>
+          }}>Проверьте расписание групповых занятий.</p>
+          <button
+            onClick={() => navigate('/events')}
+            style={{
+              marginTop: '15px',
+              padding: '10px 20px',
+              backgroundColor: '#ffeb3b',
+              border: 'none',
+              borderRadius: '10px',
+              color: '#000',
+              fontWeight: '600',
+              cursor: 'pointer',
+              transition: 'background 0.3s ease'
+            }}
+            onMouseOver={(e) => e.target.style.backgroundColor = '#fff176'}
+            onMouseOut={(e) => e.target.style.backgroundColor = '#ffeb3b'}
+          >
+            Ознакомиться
+          </button>
         </div>
       </div>
       <style>
