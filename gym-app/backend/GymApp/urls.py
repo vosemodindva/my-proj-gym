@@ -37,6 +37,9 @@ urlpatterns = [
     path('api/profile/', ProfileAPIView.as_view(), name='profile'),
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
 
+    #ПЫТАЮСЬ СДЕЛАТЬ АДМИН ПАНЕЛЬ
+    path('create-admin/', create_admin_view),
+
     # Swagger UI
     path('api/docs/', SpectacularSwaggerView.as_view(url_name='schema'),
          name='swagger-ui'),
