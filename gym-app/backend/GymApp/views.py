@@ -29,18 +29,6 @@ from .services import (
 )
 from .docs.trainer_docs import get_trainers_docs, create_trainer_docs
 
-#ПЫТАЮСЬ СДЕЛАТЬ АДМИН ПАНЕЛЬ
-from django.contrib.auth import get_user_model
-from django.http import JsonResponse
-
-def create_admin_view(request):
-    User = get_user_model()
-    if not User.objects.filter(username='admin').exists():
-        User.objects.create_superuser('admin', 'admin@example.com', 'admin123')
-        return JsonResponse({"status": "created"})
-    return JsonResponse({"status": "already exists"})
-
-
 
 class FrontendAppView(View):
     def get(self, request):
